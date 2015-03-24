@@ -1,3 +1,9 @@
+3.0910:
+ - Add: Unread option in inbox UI
+ - Add: view_unread Inbox API
+ - Add: Stations auto-seize
+ - Add: Voting allowed in embassy
+
 3.0909:
  - Add: Admin UI to set alliance logo.
  - Add: Admin UI display more info on bodies & stars.
@@ -35,6 +41,8 @@
  - Mod: Split happiness cost calculation with SS & Colonies.
  - Mod: SS Plans get cheaper packaging, level of SS Lab matters.
  - Fix: Known colonies includes allied knowledge.
+ - Mod: Balancing ships some more.
+ - Mod: Multiple Forges in empire ramp up costs.
 
 3.0908:
  - Mod: trash_messages_where now defaults to not returning deleted message IDs.
