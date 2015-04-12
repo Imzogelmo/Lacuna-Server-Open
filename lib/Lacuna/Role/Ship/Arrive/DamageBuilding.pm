@@ -201,6 +201,10 @@ after handle_arrival_procedures => sub {
             }
         }
     }
+    $body_attacked->needs_recalc(1);
+    $body_attacked->needs_surface_refresh(1);
+    $body_attacked->recalc_stats;
+    $body_attacked->update;
     for my $key (sort keys %treport) {
         push @{$report}, [
             $key,
@@ -229,7 +233,7 @@ after handle_arrival_procedures => sub {
             attachments => { table => $report },
             );
     }
-    $body_attacked->add_news(70, sprintf('An attack ship screamed out of the sky and damaged buildings on %s.', $body_attacked->name));
+    $body_attacked->add_news(70, 'An attack ship screamed out of the sky and damaged buildings on %s.', $body_attacked->name);
 
     my $log = Lacuna->db->resultset('Log::Battles')->new({
         date_stamp => DateTime->now,

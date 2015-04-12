@@ -41,7 +41,6 @@ after handle_arrival_procedures => sub {
     my $body_attacked = $self->foreign_body;
     my $craters = 0;
     for (1..$thud_num) {
-        my $body_attacked = $self->foreign_body;
         my ($x, $y) = eval{$body_attacked->find_free_space};
         if ($@) {
             last;
@@ -54,11 +53,12 @@ after handle_arrival_procedures => sub {
             });
             $body_attacked->build_building($deployed, 1);
             $deployed->start_work({},3600 * randint(24,168))->update;
-            $body_attacked->needs_surface_refresh(1);
-            $body_attacked->update;
             $craters++;
         }
     }
+    $body_attacked->needs_recalc(1);
+    $body_attacked->needs_surface_refresh(1);
+    $body_attacked->update;
     
     # notify home
     unless ($self->body->empire->skip_attack_messages) {
@@ -82,8 +82,8 @@ after handle_arrival_procedures => sub {
             params      => [$self->body->empire->id, $self->body->empire->name, $body_attacked->id, $body_attacked->name],
         );
     }
-    $body_attacked->add_news(70, sprintf("A quake measuring %.1f on the seismic magnitude scale just struck %s.",rand(10), $body_attacked->name));
-    
+    $body_attacked->add_news(70, "A quake measuring %.1f on the seismic magnitude scale just struck %s.",rand(10), $body_attacked->name);
+
     my $logs = Lacuna->db->resultset('Lacuna::DB::Result::Log::Battles');
     $logs->new({
         date_stamp => DateTime->now,

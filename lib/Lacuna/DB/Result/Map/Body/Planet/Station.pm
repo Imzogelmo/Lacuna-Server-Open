@@ -50,6 +50,8 @@ before sanitize => sub {
     my $self = shift;
     $self->propositions->delete_all;
     $self->laws->delete_all;
+    Lacuna->db->resultset('StationInfluence')->search({ station_id => $self->id })->delete;
+    Lacuna->db->resultset('Map::Star')->search({ station_id => $self->id })->update({ station_id => undef });
 };
 
 after sanitize => sub {
@@ -283,8 +285,6 @@ EOSQL
         '+as' => [ 'distance' ],
         order_by => 'distance',
     });
-
-        $|++;
 
     while (my $star = $stars_rs->next)
     {

@@ -101,6 +101,11 @@ __PACKAGE__->belongs_to('body', 'Lacuna::DB::Result::Map::Body', 'body_id');
 __PACKAGE__->belongs_to('foreign_star', 'Lacuna::DB::Result::Map::Star', 'foreign_star_id');
 __PACKAGE__->belongs_to('foreign_body', 'Lacuna::DB::Result::Map::Body', 'foreign_body_id');
 
+sub sqlt_deploy_hook {
+    my ($self, $sqlt_table) = @_;
+    $sqlt_table->add_index(name => 'idx_shiptype', fields => ['type']);
+}
+
 use constant prereq                 => [ { class=> 'Lacuna::DB::Result::Building::University',  level => 1 } ];
 use constant base_food_cost         => 1;
 use constant base_water_cost        => 1;
@@ -436,11 +441,15 @@ sub send {
     my $end_range = DateTime->now->add(seconds => ($seconds2arrive + $sec_rng));
     my $ships_rs;
     my $ag_chk = 0;
-    if ( grep { $self->type eq $_ } @ag_list ) {
+    if ($options{target}->isa('Lacuna::DB::Result::Map::Star')) {
+        $ag_chk = 0; #Just an empty statement.
+    }
+    elsif ( grep { $self->type eq $_ } @ag_list ) {
         $ships_rs = Lacuna->db->resultset('Lacuna::DB::Result::Ships')->search({
             id      => { '!=' => $self->id },
             body_id => $self->body_id,
             foreign_body_id => $self->foreign_body_id,
+            foreign_star_id => $self->foreign_star_id,
             direction => 'out',
             task    => 'Travelling',
             type => { 'in' => \@ag_list },
