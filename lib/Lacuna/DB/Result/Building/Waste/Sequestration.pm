@@ -7,7 +7,7 @@ extends 'Lacuna::DB::Result::Building::Waste';
 
 around 'build_tags' => sub {
     my ($orig, $class) = @_;
-    return ($orig->($class), qw(Storage));
+    return ($orig->($class), qw(Storage Ships));
 };
 
 use constant controller_class => 'Lacuna::RPC::Building::WasteSequestration';
